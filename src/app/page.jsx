@@ -115,6 +115,23 @@ export default function Home() {
 
       if (data.success) {
         setSpell(data.spell)
+
+        // ── Local Storage Statistics Updates for Shape Unlocks ──
+        const placedIdsList = Object.values(placedGlyphs)
+        const isFireWaterUnstable = data.spell.rarity === 'unstable' && placedIdsList.includes('fire') && placedIdsList.includes('water')
+        
+        const currentSpells = parseInt(localStorage.getItem('wha_spells_cast_count') || '0', 10)
+        localStorage.setItem('wha_spells_cast_count', (currentSpells + 1).toString())
+        
+        if (data.spell.rarity === 'legendary') {
+          const currentLegendary = parseInt(localStorage.getItem('wha_legendary_cast_count') || '0', 10)
+          localStorage.setItem('wha_legendary_cast_count', (currentLegendary + 1).toString())
+        }
+        
+        if (isFireWaterUnstable) {
+          localStorage.setItem('wha_cast_fire_water_unstable', 'true')
+        }
+
         // ── Check for unlock AFTER successful cast ──
         const unlock = checkForUnlock(placedGlyphs, unlockedIds)
         if (unlock) {
@@ -181,16 +198,20 @@ export default function Home() {
             >
               {rank.title}
             </span>
-            <span className="font-cinzel text-[8px] text-[#6b6080]">
+            <span className="font-cinzel text-[8px] text-[#6b6080]" suppressHydrationWarning>
               {unlockedIds.length}/{GLYPHS.length} sigils
             </span>
           </div>
-          <div className="mt-3">
-  <Link href="/grimoire"
-    className="font-cinzel text-[10px] tracking-[1.5px] uppercase px-4 py-2 rounded-full border border-[rgba(201,168,76,0.25)] text-[#c9a84c] hover:bg-[rgba(201,168,76,0.08)] transition-all">
-    The Grimoire →
-  </Link>
-</div>
+          <div className="flex items-center justify-center gap-3 mt-3">
+            <Link href="/grimoire"
+              className="font-cinzel text-[10px] tracking-[1.5px] uppercase px-4 py-2 rounded-full border border-[rgba(201,168,76,0.25)] text-[#c9a84c] hover:bg-[rgba(201,168,76,0.08)] transition-all">
+              The Grimoire →
+            </Link>
+            <Link href="/blueprint"
+              className="font-cinzel text-[10px] tracking-[1.5px] uppercase px-4 py-2 rounded-full border border-[rgba(201,168,76,0.25)] text-[#c9a84c] hover:bg-[rgba(201,168,76,0.08)] transition-all">
+              Blueprint Forge →
+            </Link>
+          </div>
         </header>
 
         {/* THREE COLUMN LAYOUT */}

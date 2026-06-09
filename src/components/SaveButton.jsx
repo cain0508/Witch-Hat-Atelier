@@ -1,16 +1,18 @@
 // ═══════════════════════════════════════════════
 //  SAVE BUTTON — Saves spell to community grimoire
 //  Shows after a spell is successfully cast.
+//  Supports both single circle and blueprint rituals.
 // ═══════════════════════════════════════════════
 
 'use client'
 
 import { useState } from 'react'
 
-export default function SaveButton({ spell, placedGlyphs, spellState }) {
+export default function SaveButton({ spell, placedGlyphs, spellState, blueprint }) {
   const [status, setStatus] = useState('idle') // idle | saving | saved | error
 
   if (!spell) return null
+  const isBlueprint = !!blueprint
 
   async function handleSave() {
     if (status !== 'idle') return
@@ -22,6 +24,8 @@ export default function SaveButton({ spell, placedGlyphs, spellState }) {
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({
           placedGlyphs,
+          blueprint,
+          isBlueprint,
           saveToGrimoire: true,
         }),
       })
