@@ -8,6 +8,7 @@
 
 import { useState, useEffect } from 'react'
 import { SHAPES, SHAPE_TIERS, getUnlockedShapes } from '@/lib/shapes'
+import WaxSeal from './WaxSeal'
 
 const TIER_ORDER = [
   SHAPE_TIERS.BASE,
@@ -19,12 +20,12 @@ const TIER_ORDER = [
 ]
 
 const TIER_LABELS = {
-  base:     'Foundation',
-  basic:    'Basic',
+  base: 'Foundation',
+  basic: 'Basic',
   advanced: 'Advanced',
-  master:   'Master',
-  special:  'Special',
-  rare:     'Rare',
+  master: 'Master',
+  special: 'Special',
+  rare: 'Rare',
 }
 
 // SVG previews for each shape
@@ -32,12 +33,12 @@ const SHAPE_SVGS = {
   circle: `<svg viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="22" stroke="currentColor" stroke-width="1.2" stroke-dasharray="3 4"/><circle cx="30" cy="30" r="4" fill="currentColor" opacity=".5"/></svg>`,
   triangle: `<svg viewBox="0 0 60 60" fill="none"><polygon points="30,8 54,50 6,50" stroke="currentColor" stroke-width="1.2" fill="none"/><circle cx="30" cy="30" r="3" fill="currentColor" opacity=".5"/></svg>`,
   pentagon: `<svg viewBox="0 0 60 60" fill="none"><polygon points="30,6 56,24 46,52 14,52 4,24" stroke="currentColor" stroke-width="1.2" fill="none"/><circle cx="30" cy="32" r="3" fill="currentColor" opacity=".5"/></svg>`,
-  hexagon:  `<svg viewBox="0 0 60 60" fill="none"><polygon points="30,6 52,18 52,42 30,54 8,42 8,18" stroke="currentColor" stroke-width="1.2" fill="none"/></svg>`,
+  hexagon: `<svg viewBox="0 0 60 60" fill="none"><polygon points="30,6 52,18 52,42 30,54 8,42 8,18" stroke="currentColor" stroke-width="1.2" fill="none"/></svg>`,
   trispell: `<svg viewBox="0 0 60 60" fill="none"><circle cx="30" cy="18" r="13" stroke="currentColor" stroke-width="1" fill="none" opacity=".8"/><circle cx="19" cy="38" r="13" stroke="currentColor" stroke-width="1" fill="none" opacity=".8"/><circle cx="41" cy="38" r="13" stroke="currentColor" stroke-width="1" fill="none" opacity=".8"/></svg>`,
-  square:   `<svg viewBox="0 0 60 60" fill="none"><rect x="10" y="10" width="40" height="40" stroke="currentColor" stroke-width="1.2" fill="none"/><circle cx="10" cy="10" r="2.5" fill="currentColor" opacity=".6"/><circle cx="50" cy="10" r="2.5" fill="currentColor" opacity=".6"/><circle cx="50" cy="50" r="2.5" fill="currentColor" opacity=".6"/><circle cx="10" cy="50" r="2.5" fill="currentColor" opacity=".6"/></svg>`,
-  star:     `<svg viewBox="0 0 60 60" fill="none"><polygon points="30,4 36,22 54,22 40,34 46,52 30,42 14,52 20,34 6,22 24,22" stroke="currentColor" stroke-width="1.2" fill="none"/></svg>`,
-  spiral:   `<svg viewBox="0 0 60 60" fill="none"><path d="M30 30 Q44 16 44 30 Q44 46 30 46 Q14 46 14 28 Q14 10 32 10 Q50 10 50 30" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round"/><circle cx="30" cy="30" r="2.5" fill="currentColor" opacity=".6"/></svg>`,
-  vesica:   `<svg viewBox="0 0 60 60" fill="none"><circle cx="22" cy="30" r="16" stroke="currentColor" stroke-width="1.1" fill="none" opacity=".8"/><circle cx="38" cy="30" r="16" stroke="currentColor" stroke-width="1.1" fill="none" opacity=".8"/></svg>`,
+  square: `<svg viewBox="0 0 60 60" fill="none"><rect x="10" y="10" width="40" height="40" stroke="currentColor" stroke-width="1.2" fill="none"/><circle cx="10" cy="10" r="2.5" fill="currentColor" opacity=".6"/><circle cx="50" cy="10" r="2.5" fill="currentColor" opacity=".6"/><circle cx="50" cy="50" r="2.5" fill="currentColor" opacity=".6"/><circle cx="10" cy="50" r="2.5" fill="currentColor" opacity=".6"/></svg>`,
+  star: `<svg viewBox="0 0 60 60" fill="none"><polygon points="30,4 36,22 54,22 40,34 46,52 30,42 14,52 20,34 6,22 24,22" stroke="currentColor" stroke-width="1.2" fill="none"/></svg>`,
+  spiral: `<svg viewBox="0 0 60 60" fill="none"><path d="M30 30 Q44 16 44 30 Q44 46 30 46 Q14 46 14 28 Q14 10 32 10 Q50 10 50 30" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round"/><circle cx="30" cy="30" r="2.5" fill="currentColor" opacity=".6"/></svg>`,
+  vesica: `<svg viewBox="0 0 60 60" fill="none"><circle cx="22" cy="30" r="16" stroke="currentColor" stroke-width="1.1" fill="none" opacity=".8"/><circle cx="38" cy="30" r="16" stroke="currentColor" stroke-width="1.1" fill="none" opacity=".8"/></svg>`,
 }
 
 export default function ShapePicker({
@@ -60,7 +61,7 @@ export default function ShapePicker({
       const spellsCast = parseInt(localStorage.getItem('wha_spells_cast_count') || '0', 10)
       const legendaryCast = parseInt(localStorage.getItem('wha_legendary_cast_count') || '0', 10)
       const fireWaterUnstable = localStorage.getItem('wha_cast_fire_water_unstable') === 'true'
-      
+
       const unlockedGlyphsRaw = localStorage.getItem('wha_unlocked_glyphs')
       const unlockedGlyphs = unlockedGlyphsRaw ? JSON.parse(unlockedGlyphsRaw) : []
       const hiddenGlyphs = ['cinis', 'tempest', 'crepus', 'nexus'].filter(id => unlockedGlyphs.includes(id)).length
@@ -90,50 +91,48 @@ export default function ShapePicker({
   const canAddMore = selectedShapes.length < maxShapes
 
   return (
-    <div className="flex flex-col bg-[#0e0a1a] border border-[rgba(201,168,76,0.22)] rounded-xl overflow-hidden h-full">
+    <div className="flex flex-col border border-[#a07840] rounded-[4px] overflow-hidden h-full shadow-[2px_4px_12px_rgba(80,40,0,0.3)]" style={{ background: 'linear-gradient(135deg, #e8d5a3, #d4b483)' }}>
 
       {/* Header */}
-      <div className="flex items-center gap-2 px-3 py-2.5 border-b border-[rgba(201,168,76,0.1)] bg-[rgba(201,168,76,0.02)]">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-          <polygon points="6,1 11,4 11,8 6,11 1,8 1,4" stroke="#c9a84c" strokeWidth="1" fill="none"/>
-        </svg>
-        <span className="font-cinzel text-[10px] tracking-[2px] text-[#c9a84c] uppercase">
+      <div className="flex items-center gap-2 px-3 py-2.5 border-b-[3px] border-double border-[#a07840]">
+        <span className="font-cinzel text-[10px] tracking-[2px] text-[#7a3e00] uppercase">
           Blueprint Shapes
         </span>
-        <span className="ml-auto font-cinzel text-[8px] text-[#6b6080]">
+        <span className="ml-auto font-cinzel text-[10px] px-2 py-0.5 rounded-[2px]" style={{ background: '#4a1a00', color: '#f5e6c8', border: '1px solid #c9860b' }}>
           {selectedShapes.length}/{maxShapes}
         </span>
       </div>
 
       {/* Current blueprint */}
       {selectedShapes.length > 0 && (
-        <div className="px-3 py-2.5 border-b border-[rgba(201,168,76,0.08)] bg-[rgba(45,27,105,0.1)]">
-          <p className="font-cinzel text-[8px] tracking-[2px] text-[#6b6080] uppercase mb-2">
+        <div className="px-3 py-2.5 border-b-[3px] border-double border-[#a07840]">
+          <p className="font-cinzel text-[9px] tracking-[2px] text-[#7a4f1a] italic uppercase mb-3">
             Active Blueprint
           </p>
-          <div className="flex gap-2 items-center flex-wrap">
+          <div className="flex gap-2 items-center flex-wrap justify-center">
             {selectedShapes.map((shapeId, idx) => {
               const shape = SHAPES.find(s => s.id === shapeId)
               return (
-                <div key={idx} className="flex items-center gap-1">
+                <div key={idx} className="flex items-center gap-2">
                   {idx > 0 && (
-                    <span className="font-cinzel text-[8px] text-[#6b6080]">→</span>
+                    <span className="font-cinzel text-[12px] text-[#b8860b]">→</span>
                   )}
-                  <div
-                    className="flex items-center gap-1.5 px-2 py-1 rounded-lg border cursor-pointer hover:border-[rgba(196,75,48,0.4)] transition-all"
-                    style={{ borderColor: `${shape?.color}40`, background: `${shape?.color}10` }}
-                    onClick={() => onRemoveShape(idx)}
-                    title="Click to remove"
-                  >
-                    <div
-                      className="w-4 h-4"
-                      style={{ color: shape?.color }}
-                      dangerouslySetInnerHTML={{ __html: SHAPE_SVGS[shapeId] ?? '' }}
-                    />
-                    <span className="font-cinzel text-[8px]" style={{ color: shape?.color }}>
-                      {shape?.name}
+                  <div className="flex flex-col items-center gap-1">
+                    <div 
+                      onClick={() => onRemoveShape(idx)}
+                      title="Click to remove"
+                      className="cursor-pointer transition-transform hover:scale-105"
+                    >
+                      <WaxSeal
+                        color="#8b1a1a"
+                        iconSvg={SHAPE_SVGS[shapeId]}
+                        size={56}
+                        glowColor={idx === 0 ? '#f0c040' : idx === 1 ? '#d870db' : '#50c8ff'} // simple matching for auras
+                      />
+                    </div>
+                    <span className="font-cinzel text-[8px] tracking-[1px] text-[#3b1f0a] uppercase font-bold mt-1">
+                      {shape?.name} <span className="text-[#8b1a1a] cursor-pointer hover:text-red-500" onClick={() => onRemoveShape(idx)}>X</span>
                     </span>
-                    <span className="text-[#6b6080] text-[9px]">×</span>
                   </div>
                 </div>
               )
@@ -147,13 +146,13 @@ export default function ShapePicker({
 
         {Object.entries(grouped).map(([tier, shapes]) => (
           <div key={tier}>
-            <p className="font-cinzel text-[8px] tracking-[2px] text-[#6b6080] uppercase pb-1.5 mb-2 border-b border-[rgba(201,168,76,0.08)]">
-              {TIER_LABELS[tier]}
+            <p className="font-cinzel text-[10px] tracking-[2px] text-[#a07840] uppercase pb-1 mb-2 text-center">
+              ── {TIER_LABELS[tier]} ──
             </p>
             <div className="grid grid-cols-2 gap-1.5">
               {shapes.map(shape => {
-                const isSelected  = selectedShapes.includes(shape.id)
-                const isDisabled  = !canAddMore && !isSelected
+                const isSelected = selectedShapes.includes(shape.id)
+                const isDisabled = !canAddMore && !isSelected
                 return (
                   <ShapeCard
                     key={shape.id}
@@ -180,21 +179,21 @@ export default function ShapePicker({
         {/* Locked shapes — mystery slots */}
         {lockedShapes.length > 0 && (
           <div>
-            <p className="font-cinzel text-[8px] tracking-[2px] text-[#6b6080] uppercase pb-1.5 mb-2 border-b border-[rgba(201,168,76,0.08)]">
-              Undiscovered
+            <p className="font-cinzel text-[10px] tracking-[2px] text-[#a07840] uppercase pb-1 mb-2 text-center">
+              ── Undiscovered ──
             </p>
             <div className="grid grid-cols-2 gap-1.5">
               {lockedShapes.map(shape => (
                 <div
                   key={shape.id}
-                  className="flex flex-col items-center p-2 rounded-lg border border-[rgba(255,255,255,0.04)] bg-[rgba(255,255,255,0.01)] opacity-35 cursor-not-allowed"
+                  className="flex flex-col items-center gap-1 w-full cursor-not-allowed grayscale opacity-50"
                   title={shape.unlockCondition}
                 >
-                  <div className="w-8 h-8 mb-1 flex items-center justify-center text-[18px] opacity-30">◈</div>
-                  <span className="font-cinzel text-[8.5px] text-[#6b6080]">???</span>
-                  <span className="font-cinzel text-[6.5px] text-[#6b6080] mt-1 text-center leading-tight opacity-70">
-                    {shape.unlockCondition}
-                  </span>
+                  <div className="relative w-[60px] h-[60px] rounded-[4px] flex items-center justify-center bg-[#1a0d00] border-[2px] border-[#5a3a00]">
+                    <div className="absolute inset-[3px] border border-[#5a3a00] opacity-60 rounded-[2px]" />
+                    <div className="w-8 h-8 flex items-center justify-center text-[22px] text-[#5a3a00] font-bold">?</div>
+                  </div>
+                  <span className="font-cinzel text-[9px] text-[#3b1f0a] font-bold uppercase tracking-wide mt-1">???</span>
                 </div>
               ))}
             </div>
@@ -214,28 +213,26 @@ function ShapeCard({ shape, svgPreview, isSelected, isDisabled, onSelect }) {
       disabled={isDisabled}
       title={shape.quality}
       className={`
-        flex flex-col items-center p-2 rounded-lg border w-full
-        transition-all duration-200 text-center select-none
-        ${isDisabled
-          ? 'border-[rgba(255,255,255,0.05)] opacity-40 cursor-not-allowed'
-          : isSelected
-            ? 'border-[#c9a84c] bg-[rgba(201,168,76,0.12)] shadow-[0_0_12px_rgba(201,168,76,0.2)] cursor-pointer'
-            : 'border-[rgba(201,168,76,0.15)] bg-[rgba(45,27,105,0.1)] hover:border-[#c9a84c] hover:bg-[rgba(45,27,105,0.28)] hover:-translate-y-px cursor-pointer'
-        }
+        flex flex-col items-center gap-1 w-full
+        transition-all duration-200 text-center select-none group
+        ${isDisabled ? 'opacity-50 grayscale cursor-not-allowed' : 'cursor-pointer'}
       `}
     >
-      <div
-        className="w-8 h-8 mb-1"
-        style={{ color: isSelected ? '#c9a84c' : shape.color }}
-        dangerouslySetInnerHTML={{ __html: svgPreview ?? '' }}
-      />
-      <span className="font-cinzel text-[8.5px] leading-tight" style={{ color: isSelected ? '#e8d090' : shape.color }}>
+      <div className={`
+        relative w-[60px] h-[60px] rounded-[4px] flex items-center justify-center transition-all duration-300
+        bg-[#1a0d00] border-[2px] border-[#c9860b] shadow-[0_4px_8px_rgba(0,0,0,0.4)]
+        ${isSelected ? 'shadow-[0_0_15px_#f0c040] border-[#f0c040]' : 'group-hover:border-[#f0c040] group-hover:shadow-[0_0_10px_#f0c040]'}
+      `}>
+        <div className="absolute inset-[3px] border border-[#a07840] opacity-60 rounded-[2px] pointer-events-none" />
+
+        <div
+          className={`w-8 h-8 ${isSelected ? 'text-[#f5e6c8] drop-shadow-[0_0_6px_#f0c040]' : 'text-[#c9a55a]'}`}
+          dangerouslySetInnerHTML={{ __html: svgPreview ?? '' }}
+        />
+      </div>
+      <span className="font-cinzel text-[10px] leading-tight text-[#3b1f0a] font-bold uppercase mt-1">
         {shape.name}
       </span>
-      <span className="font-cinzel text-[6.5px] text-[#6b6080] mt-0.5 leading-tight">
-        {shape.subtitle}
-      </span>
-      <div className="w-1 h-1 rounded-full mt-1" style={{ background: shape.color }}/>
     </button>
   )
 }

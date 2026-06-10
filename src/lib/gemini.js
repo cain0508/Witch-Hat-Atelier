@@ -282,3 +282,7 @@ export async function generateBlueprintSpell(blueprint) {
     }
   }
 }
+
+{
+  "mcpServers"
+}

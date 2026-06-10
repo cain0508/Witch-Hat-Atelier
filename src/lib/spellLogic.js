@@ -206,17 +206,19 @@ export function neatnessToDuration(overallScore) {
 // Human-readable grade for a score value.
 
 export function neatnessLabel(score) {
-  if (score >= 85) return 'Pristine'
-  if (score >= 65) return 'Adequate'
-  if (score >= 45) return 'Passable'
-  return 'Messy'
+  if (score >= 80) return 'Pristine'
+  if (score >= 60) return 'Good'
+  if (score >= 40) return 'Passable'
+  if (score >= 20) return 'Messy'
+  return 'Chaotic'
 }
 
 export function neatnessColor(score) {
-  if (score >= 85) return '#4ecdc4'
-  if (score >= 65) return '#5cb85c'
-  if (score >= 45) return '#c9a84c'
-  return '#e8593c'
+  if (score >= 80) return '#2d7a1a'
+  if (score >= 60) return '#b8860b'
+  if (score >= 40) return '#8b4513'
+  if (score >= 20) return '#8b0000'
+  return '#5a0000'
 }
 
 // ── SPELL STATE SUMMARY ──────────────────────────
