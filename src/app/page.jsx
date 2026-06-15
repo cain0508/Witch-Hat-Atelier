@@ -220,17 +220,19 @@ export default function Home() {
         </header>
 
         {/* THREE COLUMN LAYOUT */}
-        <div className="grid grid-cols-[200px_1fr_250px] gap-4 items-start">
+        <div className="flex flex-col lg:grid lg:grid-cols-[200px_1fr_250px] gap-8 lg:gap-4 items-center lg:items-start">
 
           {/* LEFT — Glyph Picker */}
-          <GlyphPicker
-            selectedGlyph={selectedGlyph}
-            onSelectGlyph={handleSelectGlyph}
-            unlockedIds={unlockedIds}
-          />
+          <div className="w-full max-w-[400px] lg:max-w-none">
+            <GlyphPicker
+              selectedGlyph={selectedGlyph}
+              onSelectGlyph={handleSelectGlyph}
+              unlockedIds={unlockedIds}
+            />
+          </div>
 
           {/* CENTER */}
-          <div className="flex flex-col items-center gap-4">
+          <div className="flex flex-col items-center gap-4 w-full">
             <MagicCircle
               placedGlyphs={placedGlyphs}
               selectedGlyph={selectedGlyph}
@@ -281,12 +283,14 @@ export default function Home() {
           </div>
 
           {/* RIGHT — Spell Card */}
-          <SpellCard
-            spell={spell}
-            duration={spellState?.duration ?? null}
-            placedGlyphs={placedGlyphs}
-            isLoading={isLoading}
-          />
+          <div className="w-full max-w-[400px] lg:max-w-none">
+            <SpellCard
+              spell={spell}
+              duration={spellState?.duration ?? null}
+              placedGlyphs={placedGlyphs}
+              isLoading={isLoading}
+            />
+          </div>
 
         </div>
       </div>
