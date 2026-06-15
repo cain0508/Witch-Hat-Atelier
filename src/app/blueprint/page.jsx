@@ -186,7 +186,7 @@ export default function BlueprintPage() {
         {'ᚠᚢᚦᚨᚱᚲ'.repeat(50)}
       </div>
 
-      <div className="relative z-10 max-w-[1300px] mx-auto px-4 py-5">
+      <div className="relative z-10 max-w-[1700px] mx-auto px-4 py-5">
 
         {/* HEADER */}
         <header className="text-center mb-6 pb-4 border-b-[3px] border-double border-[#a07840]">
@@ -212,10 +212,10 @@ export default function BlueprintPage() {
         </header>
 
         {/* FOUR COLUMN LAYOUT */}
-        <div className="grid grid-cols-[200px_1fr_200px_270px] gap-4 items-start">
+        <div className="flex flex-col xl:grid xl:grid-cols-[200px_1fr_200px_270px] gap-8 xl:gap-4 items-center xl:items-start">
 
           {/* COL 1 — Shape Picker */}
-          <div className="h-[520px]">
+          <div className="w-full max-w-[400px] xl:max-w-none xl:h-[520px]">
             <ShapePicker
               selectedShapes={blueprint.shapes.map(s => s.shapeId)}
               onAddShape={handleAddShape}
@@ -225,12 +225,13 @@ export default function BlueprintPage() {
           </div>
 
           {/* COL 2 — Blueprint Canvas */}
-          <div className="flex flex-col items-center gap-4">
+          <div className="flex flex-col items-center gap-4 w-full">
             {blueprint.shapes.length === 0 ? (
-              <div className="flex flex-col items-center justify-center w-full h-[380px] border border-dashed border-[#a07840] rounded-[4px] bg-[rgba(255,255,255,0.1)] p-8">
-                <div className="text-[32px] opacity-40 text-[#b8860b] mb-3">◈</div>
-                <p className="font-cinzel text-[11px] tracking-[1px] text-[#7a4f1a] text-center">
-                  Select a blueprint shape on the left to begin weaving the ritual.
+              <div className="flex flex-col items-center justify-center w-full h-[480px] border-[2px] border-dashed border-[#a07840] rounded-[6px] bg-[rgba(201,165,90,0.05)] p-8 shadow-[inset_0_0_20px_rgba(180,140,60,0.1)] transition-all hover:bg-[rgba(201,165,90,0.1)]">
+                <div className="text-[48px] opacity-40 text-[#b8860b] mb-4" style={{ filter: 'drop-shadow(0 0 10px rgba(184,134,11,0.3))' }}>◈</div>
+                <h3 className="font-cinzel text-[16px] text-[#5c3317] font-bold mb-2">The Forge Awaits</h3>
+                <p className="font-cinzel text-[12px] tracking-[1px] text-[#7a4f1a] text-center max-w-sm">
+                  Select a blueprint shape on the left to begin weaving your ritual.
                 </p>
               </div>
             ) : (
@@ -314,7 +315,7 @@ export default function BlueprintPage() {
           </div>
 
           {/* COL 3 — Glyph Picker */}
-          <div className="h-[520px]">
+          <div className="w-full max-w-[400px] xl:max-w-none xl:h-[520px]">
             <GlyphPicker
               selectedGlyph={selectedGlyph}
               onSelectGlyph={(id) => setSelectedGlyph(prev => prev === id ? null : id)}
@@ -323,7 +324,7 @@ export default function BlueprintPage() {
           </div>
 
           {/* COL 4 — Spell Card */}
-          <div className="h-[520px] overflow-y-auto">
+          <div className="w-full max-w-[400px] xl:max-w-none xl:h-[520px] overflow-y-auto">
             <SpellCard
               spell={spell}
               duration={blueprintState?.duration ?? null}
