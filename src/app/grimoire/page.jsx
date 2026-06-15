@@ -109,16 +109,18 @@ export default function GrimoirePage() {
 
           {/* Element filter */}
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-cinzel text-[8px] tracking-[2px] text-[#5c3317] uppercase">Element</span>
+            <span className="font-cinzel text-[8px] tracking-[2px] text-[#5c3317] uppercase mr-2">Element</span>
             {ELEMENTS.map(el => (
               <button
                 key={el}
                 onClick={() => { setElement(el); setPage(1) }}
-                className="font-cinzel text-[8px] tracking-[1px] uppercase px-3 py-1.5 rounded-[3px] border transition-all"
+                className="font-cinzel text-[8px] tracking-[1.5px] uppercase px-4 py-1.5 rounded-[12px] border-[2px] transition-all duration-300 shadow-[inset_0_1px_2px_rgba(255,255,255,0.2),_0_2px_4px_rgba(0,0,0,0.3)] hover:scale-105 active:scale-95"
                 style={{
                   borderColor: element === el ? (ELEMENT_COLORS[el] ?? '#a07840') : '#7a4f1a',
                   color: element === el ? '#f5e6c8' : '#3b1f0a',
-                  background: element === el ? (ELEMENT_COLORS[el] ?? '#a07840') : 'transparent',
+                  background: element === el 
+                    ? `linear-gradient(135deg, ${ELEMENT_COLORS[el] ?? '#a07840'}, #2b1500)` 
+                    : 'linear-gradient(135deg, #c9a55a, #a07840)',
                 }}
               >
                 {el}
@@ -127,19 +129,21 @@ export default function GrimoirePage() {
           </div>
 
           {/* Rarity filter */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-cinzel text-[8px] tracking-[2px] text-[#5c3317] uppercase">Rarity</span>
+          <div className="flex items-center gap-2 flex-wrap ml-0 md:ml-4">
+            <span className="font-cinzel text-[8px] tracking-[2px] text-[#5c3317] uppercase mr-2">Rarity</span>
             {RARITIES.map(r => {
               const rs = RARITY_STYLES[r]
               return (
                 <button
                   key={r}
                   onClick={() => { setRarity(r); setPage(1) }}
-                  className="font-cinzel text-[8px] tracking-[1px] uppercase px-3 py-1.5 rounded-[3px] border transition-all"
+                  className="font-cinzel text-[8px] tracking-[1.5px] uppercase px-4 py-1.5 rounded-[12px] border-[2px] transition-all duration-300 shadow-[inset_0_1px_2px_rgba(255,255,255,0.2),_0_2px_4px_rgba(0,0,0,0.3)] hover:scale-105 active:scale-95"
                   style={{
                     borderColor: rarity === r ? rs?.border : '#7a4f1a',
                     color:       rarity === r ? rs?.text  : '#3b1f0a',
-                    background:  rarity === r ? rs?.bg    : 'transparent',
+                    background:  rarity === r 
+                      ? `linear-gradient(135deg, ${rs?.bg}, #2b1500)`
+                      : 'linear-gradient(135deg, #c9a55a, #a07840)',
                   }}
                 >
                   {r}
@@ -157,19 +161,27 @@ export default function GrimoirePage() {
             <span className="font-cinzel text-[11px] text-[#5c3317] tracking-[2px]">Reading the grimoire…</span>
           </div>
         ) : spells.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="text-4xl opacity-40 text-[#b8860b] mb-4">◎</div>
-            <p className="font-cinzel text-[12px] text-[#5c3317]">No spells found. Be the first to cast.</p>
+          <div className="flex flex-col items-center justify-center py-24 px-4 bg-[rgba(139,26,26,0.02)] border border-dashed border-[#a07840] rounded-xl mx-auto max-w-2xl mt-8">
+            <div className="text-[48px] opacity-30 text-[#b8860b] mb-4" style={{ filter: 'drop-shadow(0 0 10px rgba(184,134,11,0.5))' }}>◈</div>
+            <h3 className="font-cinzel text-[16px] text-[#5c3317] font-bold mb-2">No Spells Discovered</h3>
+            <p className="text-[12px] text-[#7a4f1a] italic text-center max-w-sm" style={{ fontFamily: 'var(--font-im-fell, serif)' }}>
+              The pages of the grimoire are blank for this incantation. Be the first witch in the atelier to weave it.
+            </p>
           </div>
         ) : (
-          <div className="grid grid-cols-3 gap-4">
-            {spells.map(spell => (
-              <SpellCard
-                key={spell._id}
-                spell={spell}
-                isLiked={likedSpells.includes(spell._id)}
-                onLike={() => handleLike(spell._id)}
-              />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {spells.map((spell, index) => (
+              <div 
+                key={spell._id} 
+                className="animate-fade-in-up"
+                style={{ animationDelay: `${index * 80}ms`, animationFillMode: 'both' }}
+              >
+                <SpellCard
+                  spell={spell}
+                  isLiked={likedSpells.includes(spell._id)}
+                  onLike={() => handleLike(spell._id)}
+                />
+              </div>
             ))}
           </div>
         )}
