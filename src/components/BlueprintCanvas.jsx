@@ -16,19 +16,19 @@ import { SHAPES, CONNECTORS } from '@/lib/shapes'
 import { GLYPHS } from '@/lib/glyphs'
 import WaxSeal from './WaxSeal'
 
-const CANVAS_W = 760
-const CANVAS_H = 380
-const SHAPE_W  = 220
-const SHAPE_H  = 340
+const CANVAS_W = 960
+const CANVAS_H = 480
+const SHAPE_W  = 275
+const SHAPE_H  = 425
 const GAP      = 40
 
-const SCALE    = 220 / 400
+const SCALE    = 275 / 400
 const Y_OFFSET = (SHAPE_H - SHAPE_W) / 2
 
 const SHAPE_OFFSETS = [
-  { x: 20,  y: 20 },
-  { x: 270, y: 20 },
-  { x: 520, y: 20 },
+  { x: 30,  y: 25 },
+  { x: 345, y: 25 },
+  { x: 660, y: 25 },
 ]
 
 function pt(cx, cy, r, angleDeg) {
