@@ -40,9 +40,9 @@ export default function UnlockToast({ unlock, onDismiss }) {
       <div
         className="relative pointer-events-auto flex flex-col items-center gap-4 p-8 rounded-2xl border"
         style={{
-          background:   'rgba(18,12,35,0.95)',
-          borderColor:  glyph.color,
-          boxShadow:    `0 0 60px ${glyph.color}40, 0 0 120px ${glyph.color}20`,
+          background:   'linear-gradient(135deg, #e8d5a3, #d4b483)',
+          borderColor:  '#a07840',
+          boxShadow:    `0 0 60px ${glyph.color}60, inset 0 0 0 2px rgba(255,255,255,0.4)`,
           maxWidth:     340,
           opacity:      phase === 'enter' ? 0 : phase === 'hold' ? 1 : 0,
           transform:    phase === 'enter' ? 'scale(0.85) translateY(20px)' : phase === 'hold' ? 'scale(1) translateY(0)' : 'scale(0.95) translateY(-10px)',
@@ -62,8 +62,8 @@ export default function UnlockToast({ unlock, onDismiss }) {
           className="w-24 h-24 rounded-full flex items-center justify-center border-2"
           style={{
             borderColor: glyph.color,
-            background:  `${glyph.color}12`,
-            boxShadow:   `0 0 30px ${glyph.color}30`,
+            background:  '#2b1500',
+            boxShadow:   `0 0 30px ${glyph.color}50`,
           }}
           dangerouslySetInnerHTML={{
             __html: glyph.svg.replace('viewBox="0 0 30 30"', 'viewBox="0 0 30 30" width="60" height="60"')
@@ -72,33 +72,33 @@ export default function UnlockToast({ unlock, onDismiss }) {
 
         {/* Glyph name */}
         <div>
-          <h2 className="font-cinzel text-[22px] font-bold text-center" style={{ color: glyph.color }}>
+          <h2 className="font-cinzel text-[22px] font-bold text-center" style={{ color: '#3b1f0a' }}>
             {glyph.name}
           </h2>
           <p className="font-cinzel text-[9px] tracking-[2px] text-center uppercase mt-1"
-             style={{ color: `${glyph.color}80` }}>
+             style={{ color: '#7a4f1a' }}>
             {glyph.element} · {glyph.type}
           </p>
         </div>
 
         {/* Divider */}
-        <div className="w-full h-px" style={{ background: `linear-gradient(to right, transparent, ${glyph.color}40, transparent)` }} />
+        <div className="w-full h-px" style={{ background: `linear-gradient(to right, transparent, #7a4f1a, transparent)` }} />
 
         {/* Effect */}
-        <p className="text-[13px] text-center text-[#e8d090]" style={{ fontFamily: 'var(--font-im-fell, serif)', fontStyle: 'italic' }}>
+        <p className="text-[13px] text-center text-[#2b1500]" style={{ fontFamily: 'var(--font-im-fell, serif)', fontStyle: 'italic', fontWeight: 'bold' }}>
           {glyph.effect}
         </p>
 
         {/* Discovery lore */}
         {glyph.discoveryLore && (
-          <p className="text-[12px] text-center text-[#a09ab8] leading-relaxed"
+          <p className="text-[12px] text-center text-[#5c3317] leading-relaxed"
              style={{ fontFamily: 'var(--font-im-fell, serif)', fontStyle: 'italic' }}>
             "{glyph.discoveryLore}"
           </p>
         )}
 
         {/* Dismiss hint */}
-        <p className="font-cinzel text-[8px] tracking-[2px] text-[#6b6080] uppercase">
+        <p className="font-cinzel text-[8px] tracking-[2px] text-[#7a4f1a] uppercase">
           Click anywhere to continue
         </p>
 
