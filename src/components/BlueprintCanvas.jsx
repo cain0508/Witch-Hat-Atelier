@@ -159,7 +159,19 @@ export default function BlueprintCanvas({
   useEffect(() => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current)
     rafRef.current = requestAnimationFrame(renderLoop)
-    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current) }
+
+    // Listen for image loads to trigger redraw
+    const handleRedraw = () => {
+      if (!rafRef.current) {
+        rafRef.current = requestAnimationFrame(renderLoop)
+      }
+    }
+    window.addEventListener('forceBlueprintRedraw', handleRedraw)
+
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+      window.removeEventListener('forceBlueprintRedraw', handleRedraw)
+    }
   }, [renderLoop])
 
   // ── Hit testing (unchanged) ──
@@ -672,13 +684,17 @@ function drawGlyphIcon(ctx, cx, cy, size, glyph, colorOverride) {
   let svgStr = glyph.svg
   if (colorOverride) svgStr = svgStr.replace(/currentColor/g, colorOverride)
 
-  const blob = new Blob([svgStr], { type: 'image/svg+xml' })
-  const url  = URL.createObjectURL(blob)
+  // Ensure SVG has explicit dimensions for reliable Canvas rendering
+  if (!svgStr.includes('width=')) {
+    svgStr = svgStr.replace('<svg ', '<svg width="30" height="30" ')
+  }
+
+  const svgDataUri = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgStr)
   const img  = new Image()
   img.onload = () => {
     glyphImageCache[cacheKey] = img
-    ctx.drawImage(img, cx - size / 2, cy - size / 2, size, size)
-    URL.revokeObjectURL(url)
+    // Dispatch event to force BlueprintCanvas to redraw with the new image
+    window.dispatchEvent(new Event('forceBlueprintRedraw'))
   }
-  img.src = url
+  img.src = svgDataUri
 }
