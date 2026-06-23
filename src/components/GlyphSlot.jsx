@@ -13,19 +13,20 @@ export default function GlyphSlot({
   selectedGlyph, 
   onPlace 
 }) {
+  const [showIcon, setShowIcon] = useState(false);
   const [justPlaced, setJustPlaced] = useState(false);
-  const [showIcon, setShowIcon] = useState(!!placedGlyphId);
 
   // Trigger animation when a new glyph is placed
   useEffect(() => {
-    if (placedGlyphId && !showIcon) {
+    if (placedGlyphId) {
       setJustPlaced(true);
       // Wait for flicker before showing icon
       const timer = setTimeout(() => {
         setShowIcon(true);
+        setJustPlaced(false);
       }, 300); // 300ms flicker
       return () => clearTimeout(timer);
-    } else if (!placedGlyphId) {
+    } else {
       setShowIcon(false);
       setJustPlaced(false);
     }

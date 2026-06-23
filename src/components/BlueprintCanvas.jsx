@@ -660,18 +660,38 @@ function drawFilledSlot(ctx, cx, cy, r, glyphId, role) {
   const glyph = GLYPHS.find(g => g.id === glyphId)
   if (!glyph) return
 
-  const roleColors = {
-    core: '#f0c040', amplifier: '#e05050', support: '#40c8a0',
-    bridge: '#4080e0', anchor: '#50c050', channel: '#a050e0',
-  }
-  const color = roleColors[role] ?? '#f0c040'
+  const glyphColor = glyph.color
 
+  // Dark background fill (matches GlyphSlot's rgba(15, 10, 25, 0.95))
   ctx.beginPath()
   ctx.arc(cx, cy, r, 0, Math.PI * 2)
-  ctx.fillStyle = color
+  ctx.fillStyle = 'rgba(15, 10, 25, 0.95)'
   ctx.fill()
 
-  drawGlyphIcon(ctx, cx, cy, r * 1.6, glyph, '#f5e6c8')
+  // Glowing colored border (matches GlyphSlot's border + boxShadow)
+  ctx.save()
+  ctx.beginPath()
+  ctx.arc(cx, cy, r, 0, Math.PI * 2)
+  ctx.strokeStyle = glyphColor
+  ctx.lineWidth = 1.5
+  ctx.shadowColor = glyphColor
+  ctx.shadowBlur = 12
+  ctx.stroke()
+  ctx.restore()
+
+  // Inner glow
+  ctx.save()
+  ctx.beginPath()
+  ctx.arc(cx, cy, r - 1, 0, Math.PI * 2)
+  ctx.strokeStyle = glyphColor + '40'
+  ctx.lineWidth = 2
+  ctx.shadowColor = glyphColor
+  ctx.shadowBlur = 8
+  ctx.stroke()
+  ctx.restore()
+
+  // Draw the glyph icon in its native color (no color override)
+  drawGlyphIcon(ctx, cx, cy, r * 1.6, glyph, null)
 }
 
 function drawGlyphIcon(ctx, cx, cy, size, glyph, colorOverride) {
