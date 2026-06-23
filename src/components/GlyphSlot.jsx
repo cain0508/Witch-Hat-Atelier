@@ -84,12 +84,17 @@ export default function GlyphSlot({
       {/* Glyph Icon (Animated in) */}
       {showIcon && glyph && (
         <div 
-          className="w-[80%] h-[80%] flex items-center justify-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
+          className="absolute inset-[10%] flex items-center justify-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
           style={{
             animation: 'glyphDrop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
           }}
-          dangerouslySetInnerHTML={{ __html: glyph.svg }}
-        />
+        >
+          <div 
+            className="w-full h-full glyph-icon-container"
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            dangerouslySetInnerHTML={{ __html: glyph.svg }}
+          />
+        </div>
       )}
     </div>
   );
