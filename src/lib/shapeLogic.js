@@ -34,15 +34,20 @@ export function slotHarmonyScore(shapeId, placedGlyphs) {
     const glyph = getGlyph(glyphId)
     if (!slot || !glyph) return
 
-    let score = 60 // base score
+    let score = 40 // base score — lowered from 60 to prevent inflation
 
     // Affinity bonus — element matches shape's preferred elements
     if (hasAffinity(shapeId, glyph.element)) score += 20
 
-    // Role match bonus — primary glyph in core slot
+    // Role match bonus — correct glyph type in the right slot
     if (slot.role === SLOT_ROLES.CORE && glyph.type === 'primary') score += 15
     if (slot.role === SLOT_ROLES.AMPLIFIER && glyph.type === 'primary') score += 10
-    if (slot.role === SLOT_ROLES.SUPPORT && glyph.type === 'modifier') score += 10
+    if (slot.role === SLOT_ROLES.SUPPORT && glyph.type === 'modifier') score += 12
+
+    // Role mismatch penalty — wrong glyph type for the slot
+    if (slot.role === SLOT_ROLES.CORE && glyph.type === 'modifier') score -= 10
+    if (slot.role === SLOT_ROLES.SUPPORT && glyph.type === 'primary') score -= 8
+    if (slot.role === SLOT_ROLES.CHANNEL && glyph.type === 'primary') score -= 5
 
     // Node group support — same group glyphs that match element
     const sameGroupSlots = shape.slots.filter(s =>
@@ -52,11 +57,11 @@ export function slotHarmonyScore(shapeId, placedGlyphs) {
       .map(s => getGlyph(placedGlyphs[s.id]))
       .filter(Boolean)
 
-    // Same group + same element = strong harmony
+    // Same group + same element = harmony (reduced from +8 to +5)
     const sameElement = sameGroupGlyphs.filter(g => g.element === glyph.element)
-    score += sameElement.length * 8
+    score += sameElement.length * 5
 
-    totalScore += Math.min(100, score)
+    totalScore += Math.max(10, Math.min(100, score))
     count++
   })
 
@@ -83,12 +88,14 @@ export function slotSymmetryScore(shapeId, placedGlyphs) {
   const aceFilled = aceSlots.filter(s => placedGlyphs[s.id]).length
   const bfdFilled = bfdSlots.filter(s => placedGlyphs[s.id]).length
 
-  let score = (filledCount / totalSlots) * 80
+  let score = (filledCount / totalSlots) * 75
 
-  // Bonus for balanced node groups
+  // Bonus for balanced node groups — scaled down when fewer than half slots filled
   if (aceSlots.length > 0 && bfdSlots.length > 0) {
     const balance = 1 - Math.abs(aceFilled - bfdFilled) / Math.max(aceSlots.length, bfdSlots.length)
-    score += balance * 20
+    const fillRatio = filledCount / totalSlots
+    const maxBalanceBonus = fillRatio >= 0.5 ? 20 : 10
+    score += balance * maxBalanceBonus
   }
 
   return Math.round(Math.min(100, score))
@@ -205,7 +212,7 @@ export function connectorScore(shapeId1, shapeId2, connectorType) {
   const s2 = getShape(shapeId2)
   if (!s1 || !s2) return 50
 
-  let score = 70 // base
+  let score = 55 // base — lowered from 70 to prevent free inflation
 
   // Natural connector pairings give bonus
   const naturalPairs = {
@@ -221,13 +228,13 @@ export function connectorScore(shapeId1, shapeId2, connectorType) {
     (shapeId1 === a && shapeId2 === b) ||
     (shapeId1 === b && shapeId2 === a)
   )
-  if (isNatural) score += 20
+  if (isNatural) score += 25
 
   // Trispell as connector always scores well
-  if (shapeId1 === 'trispell' || shapeId2 === 'trispell') score += 15
+  if (shapeId1 === 'trispell' || shapeId2 === 'trispell') score += 10
 
   // Oppose connector is always risky
-  if (connectorType === CONNECTORS.OPPOSE) score = Math.max(30, score - 20)
+  if (connectorType === CONNECTORS.OPPOSE) score = Math.max(25, score - 25)
 
   return Math.min(100, score)
 }
@@ -270,20 +277,37 @@ export function computeBlueprintScore(blueprint) {
     return n?.catastrophic
   })
 
-  const hasForcedLegendary = shapes.every(({ shapeId, placedGlyphs }) => {
+  // Only Star shape (all 6 tips filled) forces legendary — no score-based override
+  const hasForcedLegendary = shapes.some(({ shapeId, placedGlyphs }) => {
     const n = computeShapeNeatness(shapeId, placedGlyphs)
-    return n?.forcedLegendary || (n?.overall ?? 0) >= 85
+    return n?.forcedLegendary === true
   })
+
+  // Legendary via score requires: very high overall + multi-shape + all shapes strong
+  const isScoreLegendary = !hasCatastrophic &&
+    shapes.length >= 2 &&
+    overall >= 90 &&
+    shapeScores.every(s => s >= 80)
+
+  // Determine rarity with proper distribution
+  let rarity
+  if (hasForcedLegendary || isScoreLegendary) {
+    rarity = 'legendary'
+  } else if (hasCatastrophic || overall < 35) {
+    rarity = 'unstable'
+  } else if (overall >= 75) {
+    rarity = 'rare'
+  } else {
+    rarity = 'common'
+  }
 
   return {
     shapeScores,
     connectorScores,
     overall,
     hasCatastrophic,
-    hasForcedLegendary,
-    rarity: hasForcedLegendary ? 'legendary' :
-            overall >= 75 ? 'rare' :
-            overall >= 45 ? 'common' : 'unstable',
+    hasForcedLegendary: hasForcedLegendary || isScoreLegendary,
+    rarity,
   }
 }
 
